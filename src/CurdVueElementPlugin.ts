@@ -1,6 +1,8 @@
 import { Compiler } from 'webpack';
-import ServiceTemplate from './template/template'
+import ServiceTemplate from './template/ServiceTemplate'
 import fs from 'fs'
+import { promised } from 'q';
+import { resolve } from 'any-promise';
 
 export interface Options {
   servicePath?: string
@@ -15,8 +17,6 @@ export interface CurdVueElementPluginInterface {
   apply(compiler: Compiler): any
   createFile(path: string): any
 }
-
-
 
 class CurdVueElementPlugin implements CurdVueElementPluginInterface {
   config:any
@@ -37,6 +37,53 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
         return false
       }
     })
+  }
+  writeTemplate(dir,name,content){
+    let path = dir + '/' + name;
+    this.hasDir(dir).then(() => {
+      return this.hasNoFile(path)
+    }).catch((flag)=> {
+      return flag && this.createDir(dir)
+    }).then(() => {
+      this.writeFile(path,content)
+    })
+  }
+  writeFile(path,content){
+    
+  }
+
+  hasNoFile(path){
+    return new Promise((resolve,reject) => {
+      if(true)
+        resolve(true)
+      else 
+        reject(false)
+    }) 
+  }
+  hasDir(dir){
+    return new Promise((resolve,reject) => {
+      if(true)
+        resolve(true)
+      else 
+        reject(false)
+    }) 
+  }
+  createDir(dir){
+    return new Promise((resolve,reject) => {
+      if(true)
+        resolve(true)
+      else 
+        reject(false)
+    }) 
+  }
+  getTemplate(){
+
+  }
+  getComponentTemplate(){
+
+  }
+  getServiceTemplate(){
+
   }
 }
 module.exports = CurdVueElementPlugin;
