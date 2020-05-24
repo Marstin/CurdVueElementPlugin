@@ -1,8 +1,6 @@
 import { Compiler } from 'webpack';
 import ServiceTemplate from './template/ServiceTemplate'
 import fs from 'fs'
-import { promised } from 'q';
-import { resolve } from 'any-promise';
 
 export interface Options {
   servicePath?: string
