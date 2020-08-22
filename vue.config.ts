@@ -1,6 +1,6 @@
 import CurdVueElementPlugin from './CurdVueElementPlugin/CurdVueElementPlugin'
 console.log(CurdVueElementPlugin);
-module.exports = {
+export default {
   // 选项...
   configureWebpack: {
     plugins: [
