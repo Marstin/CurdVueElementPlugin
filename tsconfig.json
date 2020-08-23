@@ -18,7 +18,7 @@
     ],
     "paths": {
       "@/*": [
-        "src/*"
+        "example/*"
       ]
     },
     "lib": [
@@ -27,19 +27,15 @@
       "dom.iterable",
       "scripthost"
     ]
-  }, 
-  "files": [
-    "CurdVueElementPlugin/CurdVueElementPlugin.ts"
-  ],
+  },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
+    "example/**/*.ts",
+    "example/**/*.tsx",
+    "example/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "CurdVueElementPlugin"
+    "node_modules"
   ]
 }
