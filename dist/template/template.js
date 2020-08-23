@@ -19,4 +19,3 @@ function getList(){
     }
 }
 exports.default = ServiceTemplate;
-//# sourceMappingURL=template.js.map

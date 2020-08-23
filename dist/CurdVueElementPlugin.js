@@ -31,4 +31,3 @@ class CurdVueElementPlugin {
     }
 }
 module.exports = CurdVueElementPlugin;
-//# sourceMappingURL=CurdVueElementPlugin.js.map
