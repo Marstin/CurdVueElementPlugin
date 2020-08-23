@@ -31,18 +31,11 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
   createFile(path: string){
     let serviceTemplate = new ServiceTemplate({listUrl:"/project/list"})
     console.log("start writing")
-    fs.writeFile(path, serviceTemplate.getListService(), 'utf8', function (error) {
+    fs.writeFile(path, serviceTemplate.getListServiceTemplate(), 'utf8', function (error) {
       if (error) {
-        // eslint-disable-next-line no-console
         console.log(error)
         return false
       }
-      // console.log(src, 'html重新写入成功')
-     /*  if (src.indexOf('/index.html') === -1) {
-        fs.unlink(src, function () {
-          //  console.log(src, 'html删除成功')
-        })
-      } */
     })
   }
 }
