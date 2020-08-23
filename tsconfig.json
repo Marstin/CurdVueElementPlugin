@@ -11,6 +11,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
+    "allowJs": true,
     "baseUrl": "./",
     "types": [
       "webpack-env"
@@ -26,7 +27,10 @@
       "dom.iterable",
       "scripthost"
     ]
-  },
+  }, 
+  "files": [
+    "CurdVueElementPlugin/CurdVueElementPlugin.ts"
+  ],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",

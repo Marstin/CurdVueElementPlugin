@@ -37,11 +37,3 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
   }
 }
 module.exports = CurdVueElementPlugin;
-
-
-
-interface CUR {
-
-}
-
-export default CurdVueElementPlugin

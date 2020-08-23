@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+      "target": "ES5",
+      "module": "ES5",
+      "strict": true,
+      "jsx": "preserve",
+      "importHelpers": true,
+      "moduleResolution": "node",
+      "experimentalDecorators": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "sourceMap": true,
+      "allowJs": true,
+      "baseUrl": "./",
+      "types": [
+        "webpack-env"
+      ],
+      "outDir": "CurdVueElementPlugin/dist",
+ /*      "paths": {
+        "@/*": [
+          "src/*"
+        ]
+      }, */
+      "lib": [
+        "esnext",
+        "dom",
+        "dom.iterable",
+        "scripthost"
+      ]
+    }, 
+    "include": [
+      "CurdVueElementPlugin/**/*.ts",
+      "CurdVueElementPlugin/**/*.tsx",
+      "CurdVueElementPlugin/**/*.vue"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+  }
+  

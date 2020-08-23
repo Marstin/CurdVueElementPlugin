@@ -8,10 +8,10 @@ interface ServiceOptions {
 
 class ServiceTemplate implements ServiceTemplateInterface {
   config: ServiceOptions
-  constructor(config){
+  constructor(config: ServiceOptions){
     this.config = config;
   }
-  getListService= function(listUrl?: string){
+  getListService(listUrl?: string){
     return `function getList(){
       return new Promise((resolve: Function, reject: Function) => {
         axios({
