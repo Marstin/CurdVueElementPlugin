@@ -15,18 +15,11 @@ class CurdVueElementPlugin {
     createFile(path) {
         let serviceTemplate = new template_1.default({ listUrl: "/project/list" });
         console.log("start writing");
-        fs_1.default.writeFile(path, serviceTemplate.getListService(), 'utf8', function (error) {
+        fs_1.default.writeFile(path, serviceTemplate.getListServiceTemplate(), 'utf8', function (error) {
             if (error) {
-                // eslint-disable-next-line no-console
                 console.log(error);
                 return false;
             }
-            // console.log(src, 'html重新写入成功')
-            /*  if (src.indexOf('/index.html') === -1) {
-               fs.unlink(src, function () {
-                 //  console.log(src, 'html删除成功')
-               })
-             } */
         });
     }
 }
