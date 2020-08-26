@@ -11,10 +11,7 @@ class ServiceTemplate implements ServiceTemplateInterface {
   constructor(config: ServiceOptions){
     this.config = config;
   }
-  getTemplate(){
-    
-  }
-  getChunkCode(){
+  getChunkCodeTemplate(){
     return `import axios from 'axios;`
   }
   getListServiceTemplate(url?: string): string {

@@ -1,6 +1,7 @@
 import { Compiler } from 'webpack';
 import ServiceTemplate from './template/ServiceTemplate'
 import fs from 'fs'
+import lodash from 'lodash'
 
 export interface Options {
   servicePath?: string
@@ -20,6 +21,7 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
   config:any
   constructor(options :Options = {}){
     this.config = options
+    lodash.assign(this.config,options)
   } 
   apply(compiler: Compiler){
     compiler.plugin('done', () => {
