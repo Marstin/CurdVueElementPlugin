@@ -5,9 +5,22 @@ import util from './util/util'
 
 export interface Options {
   basePath?: string,
-  servicePath?: string,
+  servicePath: string,
   componentPath?: string,
-  service?: Object,
+  service: {
+    add?: {
+      url: string
+    },
+    list: {
+      url: string
+    },
+    delete?: {
+      url: string
+    },
+    update?: {
+      url: string
+    }
+  },
   model: {
     primarykey?: string,
     item: Array<any>
@@ -29,15 +42,14 @@ export interface CurdVueElementPluginInterface {
 class CurdVueElementPlugin implements CurdVueElementPluginInterface {
   options: Options
   constructor(options: Options){
-    util.assign(this.defaultOption(),options)
+    this.options = util.assign(this.defaultOption(),options)
   } 
   defaultOption(): Options{
     return {
       basePath: './src',
-      servicePath: '/service',
+      servicePath: '/service/test.ts',
       componentPath: '/component',
       service:{
-        baseUrl:'',
         add: {
           url: '/add'
         },
@@ -49,9 +61,6 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
         },
         update: {
           url: '/update'
-        },
-        axios: {
-
         }
       },
       model: {
@@ -73,20 +82,21 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
   }
   apply(compiler: Compiler){
     compiler.plugin('done', () => {
-      this.createFile(this.options.servicePath)
+      this.createFile(this.options.basePath + this.options.servicePath )
     });
   }
   createFile(path: string){
-    let serviceTemplate = new ServiceTemplate({listUrl:"/project/list"})
-    console.log("start writing")
-    fs.writeFile(path, serviceTemplate.getListServiceTemplate(), 'utf8', function (error) {
+    console.log(path);
+    let serviceTemplate = new ServiceTemplate(this.options.service)
+    console.log(serviceTemplate.getTemplate())
+    fs.writeFile(path, serviceTemplate.getTemplate(), 'utf8', function (error) {
       if (error) {
         console.log(error)
         return false
       }
     })
   }
-  writeTemplate(dir,name,content){
+  writeTemplate(dir: string,name: string,content: string){
     let path = dir + '/' + name;
     this.hasDir(dir).then(() => {
       return this.hasNoFile(path)
@@ -96,11 +106,11 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
       this.writeFile(path,content)
     })
   }
-  writeFile(path,content){
-    
+  writeFile(path: string,content: string){
+    return
   }
 
-  hasNoFile(path){
+  hasNoFile(path: string){
     return new Promise((resolve,reject) => {
       if(true)
         resolve(true)
@@ -108,7 +118,7 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
         reject(false)
     }) 
   }
-  hasDir(dir){
+  hasDir(dir: string){
     return new Promise((resolve,reject) => {
       if(true)
         resolve(true)
@@ -116,7 +126,7 @@ class CurdVueElementPlugin implements CurdVueElementPluginInterface {
         reject(false)
     }) 
   }
-  createDir(dir){
+  createDir(dir: string){
     return new Promise((resolve,reject) => {
       if(true)
         resolve(true)

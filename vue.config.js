@@ -15,7 +15,7 @@ module.exports = {
   },
   configureWebpack: {
     plugins: [
-      new CurdVueElementPlugin({servicePath: 'example/service.ts'})
+      new CurdVueElementPlugin({})
     ]
   },
   chainWebpack:config => {

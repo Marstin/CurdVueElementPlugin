@@ -1,4 +1,4 @@
-const assign = function (object,...args) {
+const assign = function (object: any,...args: any) {
   let target = Object.assign({},object);
   for(const arg of args){
     target = _assign(target,arg)
@@ -6,7 +6,7 @@ const assign = function (object,...args) {
   return target;
 }
 
-const _assign = function (object,source) {
+const _assign = function (object: any,source: any) {
   let target = Object.assign({},object);
   Object.keys(target).forEach(key => {
     let val = source[key];
@@ -19,7 +19,7 @@ const _assign = function (object,source) {
   return target;
 }
 
-const _isObject = function (val){
+const _isObject = function (val: any){
   return val !== null && typeof val === 'object' && !Array.isArray(val)
 }
 

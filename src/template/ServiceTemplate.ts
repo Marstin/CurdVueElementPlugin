@@ -1,79 +1,113 @@
 interface ServiceTemplateInterface {
-  config:ServiceOptions
+  templateFuncStack: Array<{func:Function,url:string}>
 }
 
 interface ServiceOptions {
-  listUrl?:string;
+  'add'?: {
+    url: string
+  },
+  'list': {
+    url: string
+  },
+  'delete'?: {
+    url: string
+  },
+  'update'?: {
+    url: string
+  }
 }
 
 class ServiceTemplate implements ServiceTemplateInterface {
-  config: ServiceOptions
+  templateFuncStack: Array<{func:Function,url:string}>
   constructor(config: ServiceOptions){
-    this.config = config;
+    this.templateFuncStack = this.getTemplateStack(config)
   }
-  getChunkCodeTemplate(){
-    return `import axios from 'axios;`
-  }
-  getListServiceTemplate(url?: string): string {
-    return `
-function list(){
-  return new Promise((resolve: Function, reject: Function) => {
-    axios({
-      url:'${ url||''}',
-      method:'get'
-    }).then((res: any) => {
-      resolve(res.data.data.map((o: any ) =>  { return { value:o.id,text:o.projName} }))
+  getTemplate(){
+    let codeStr:string = "";
+    this.templateFuncStack.forEach((f)=> {
+      codeStr += f.func.apply(this,[f.url])
     })
-  })
-}`
+    return this.getChunkCodeTemplate(codeStr)
   }
-  getAddServiceTemplate(url?: string): string {
-    return `
-add(data: any) {
-  return new Promise((resolve: Function,reject: Function) => {
-    axios({
-      url:'${ url||''}',
-      method:'post',
-      data:qs.stringify(data)
-    }).then((res: any) => {
-      resolve(res.data)
-    }).catch((err: any) => {
-      reject(err)
-    });
-  })
-}`
+  getFuncName() {
+    return this.templateFuncStack.map(f => f.func);
   }
-  getUpdateServiceTemplate(url?: string): string {
-    return `
-update(data: any) {
-  return new Promise((resolve: Function,reject: Function) => {
-    axios({
-      url:'${ url||''}',
-      method:'post',
-      data:qs.stringify(data)
-    }).then((res: any) => {
-      resolve(res.data)
-    }).catch((err: any) => {
-      reject(err)
-    });
-  })
-}`
+  getTemplateStack(config:ServiceOptions):Array<{func:Function,url:string}> {
+    const templateFuncStack:Array<{func:Function,url:string}> = []
+    for(let key in config){
+      (this as any)[key + 'ServiceTemplate'] && templateFuncStack.push({func:(this as any)[key + 'ServiceTemplate'],url:(config as any)[key].url})
+    }
+    return templateFuncStack;
   }
-  getDeleteServiceTemplate(url?: string): string {
+  getChunkCodeTemplate(funcCode: string){
+    return `import axios from "axios"
+import qs from "qs"
+
+const Services = {${funcCode}
+}
+
+export default Services`
+  }
+  listServiceTemplate(url?: string): string {
     return `
-delete(ids: any) {
-  return new Promise((resolve: Function, reject: Function) => {
-    axios({
-      url:'${ url||''}',
-      method:'get',
-      params:{ids:ids}
-    }).then((res: any) => {
-      resolve(res.data)
-    }).catch ((err) => {
-      reject(err)
+  list(){
+    return new Promise((resolve: Function, reject: Function) => {
+      axios({
+        url:'${ url||''}',
+        method:'get'
+      }).then((res: any) => {
+        resolve(res.data.data.map((o: any ) =>  { return { value:o.id,text:o.projName} }))
+      })
     })
-  })
-}`
+  },`
+  }
+  addServiceTemplate(url?: string): string {
+    return `
+  add(data: any) {
+    return new Promise((resolve: Function,reject: Function) => {
+      axios({
+        url:'${ url||''}',
+        method:'post',
+        data:qs.stringify(data)
+      }).then((res: any) => {
+        resolve(res.data)
+      }).catch((err: any) => {
+        reject(err)
+      });
+    })
+  },`
+  }
+  updateServiceTemplate(url?: string): string {
+    return `
+  update(data: any) {
+    return new Promise((resolve: Function,reject: Function) => {
+      axios({
+        url:'${ url||''}',
+        method:'post',
+        data:qs.stringify(data)
+      }).then((res: any) => {
+        resolve(res.data)
+      }).catch((err: any) => {
+        reject(err)
+      });
+    })
+  },`
+  }
+  deleteServiceTemplate(url?: string): string {
+    return `
+  delete(ids: any) {
+    return new Promise((resolve: Function, reject: Function) => {
+      axios({
+        url:'${ url||''}',
+        method:'get',
+        params:{ids:ids}
+      }).then((res: any) => {
+        resolve(res.data)
+      }).catch ((err) => {
+        reject(err)
+      })
+    })
+  },`
   }
   
 }
