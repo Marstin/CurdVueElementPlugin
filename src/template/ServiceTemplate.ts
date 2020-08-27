@@ -29,7 +29,7 @@ function list(){
   }
   getAddServiceTemplate(url?: string): string {
     return `
-update(data: any) {
+add(data: any) {
   return new Promise((resolve: Function,reject: Function) => {
     axios({
       url:'${ url||''}',

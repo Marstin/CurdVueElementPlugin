@@ -1,14 +1,23 @@
 import { Compiler } from 'webpack';
 import ServiceTemplate from './template/ServiceTemplate'
 import fs from 'fs'
-import lodash from 'lodash'
+import util from './util/util'
 
 export interface Options {
-  servicePath?: string
-}
-
-export interface DefaultOption {
-  servicePath: string
+  basePath?: string,
+  servicePath?: string,
+  componentPath?: string,
+  service?: Object,
+  model: {
+    primarykey?: string,
+    item: Array<any>
+  },
+  searchModel?: Object,
+  tree?:{
+    url: string
+    isSearchCondition: boolean,
+    searchItem: string
+  }
 }
 
 export interface CurdVueElementPluginInterface {
@@ -18,14 +27,53 @@ export interface CurdVueElementPluginInterface {
 }
 
 class CurdVueElementPlugin implements CurdVueElementPluginInterface {
-  config:any
-  constructor(options :Options = {}){
-    this.config = options
-    lodash.assign(this.config,options)
+  options: Options
+  constructor(options: Options){
+    util.assign(this.defaultOption(),options)
   } 
+  defaultOption(): Options{
+    return {
+      basePath: './src',
+      servicePath: '/service',
+      componentPath: '/component',
+      service:{
+        baseUrl:'',
+        add: {
+          url: '/add'
+        },
+        list: {
+          url: '/list'
+        },
+        delete: {
+          url: '/delete'
+        },
+        update: {
+          url: '/update'
+        },
+        axios: {
+
+        }
+      },
+      model: {
+        primarykey:'id',
+        item:[{
+          text:'名称',
+          name:'name'
+        }]
+      },
+      searchModel: {
+
+      },
+      tree: {
+        url: '',
+        isSearchCondition: true,
+        searchItem: 'id'
+      }
+    }
+  }
   apply(compiler: Compiler){
     compiler.plugin('done', () => {
-      this.createFile(this.config.servicePath)
+      this.createFile(this.options.servicePath)
     });
   }
   createFile(path: string){

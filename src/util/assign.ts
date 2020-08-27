@@ -1,8 +1,6 @@
-import arg = require("arg")
-
 const assign = function (object,...args) {
   let target = Object.assign({},object);
-  for(const arg in args){
+  for(const arg of args){
     target = _assign(target,arg)
   }
   return target;
@@ -13,9 +11,9 @@ const _assign = function (object,source) {
   Object.keys(target).forEach(key => {
     let val = source[key];
     if(_isObject(val)){
-      target[key] = _assign(target[key],source[key])
+      target[key] = _assign(target[key],val)
     } else {
-      source[key]&&(target[key] = source[key])
+      val&&(target[key] = val)
     }
   })
   return target;
