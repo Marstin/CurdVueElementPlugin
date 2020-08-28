@@ -23,4 +23,4 @@ const _assign = function (object, source) {
 const _isObject = function (val) {
     return val !== null && typeof val === 'object' && !Array.isArray(val);
 };
-exports.default = assign;
+exports.default = { assign };

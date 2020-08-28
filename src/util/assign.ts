@@ -23,4 +23,4 @@ const _isObject = function (val: any){
   return val !== null && typeof val === 'object' && !Array.isArray(val)
 }
 
-export default assign;
+export default { assign };

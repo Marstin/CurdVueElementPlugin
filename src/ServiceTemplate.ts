@@ -1,21 +1,4 @@
-interface ServiceTemplateInterface {
-  templateFuncStack: Array<{func:Function,url:string}>
-}
-
-interface ServiceOptions {
-  'add'?: {
-    url: string
-  },
-  'list': {
-    url: string
-  },
-  'delete'?: {
-    url: string
-  },
-  'update'?: {
-    url: string
-  }
-}
+import { ServiceOptions, ServiceTemplateInterface } from './Interface'
 
 class ServiceTemplate implements ServiceTemplateInterface {
   templateFuncStack: Array<{func:Function,url:string}>
@@ -48,12 +31,12 @@ const Services = {${funcCode}
 
 export default Services`
   }
-  listServiceTemplate(url?: string): string {
+  listServiceTemplate(url: string = '/list'): string {
     return `
   list(){
     return new Promise((resolve: Function, reject: Function) => {
       axios({
-        url:'${ url||''}',
+        url:'${url}',
         method:'get'
       }).then((res: any) => {
         resolve(res.data.data.map((o: any ) =>  { return { value:o.id,text:o.projName} }))
@@ -61,12 +44,12 @@ export default Services`
     })
   },`
   }
-  addServiceTemplate(url?: string): string {
+  addServiceTemplate(url: string = '/add'): string {
     return `
   add(data: any) {
     return new Promise((resolve: Function,reject: Function) => {
       axios({
-        url:'${ url||''}',
+        url:'${url}',
         method:'post',
         data:qs.stringify(data)
       }).then((res: any) => {
@@ -77,12 +60,12 @@ export default Services`
     })
   },`
   }
-  updateServiceTemplate(url?: string): string {
+  updateServiceTemplate(url: string = '/update'): string {
     return `
   update(data: any) {
     return new Promise((resolve: Function,reject: Function) => {
       axios({
-        url:'${ url||''}',
+        url:'${url}',
         method:'post',
         data:qs.stringify(data)
       }).then((res: any) => {
@@ -93,12 +76,12 @@ export default Services`
     })
   },`
   }
-  deleteServiceTemplate(url?: string): string {
+  deleteServiceTemplate(url: string = '/delete'): string {
     return `
   delete(ids: any) {
     return new Promise((resolve: Function, reject: Function) => {
       axios({
-        url:'${ url||''}',
+        url:'${url}',
         method:'get',
         params:{ids:ids}
       }).then((res: any) => {
