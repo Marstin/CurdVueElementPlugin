@@ -15,7 +15,11 @@ module.exports = {
   },
   configureWebpack: {
     plugins: [
-      new CurdVueElementPlugin({})
+      new CurdVueElementPlugin({
+        name:'project',
+        baseDir:'./example',
+        serviceDir: '/service/test/test'
+      })
     ]
   },
   chainWebpack:config => {

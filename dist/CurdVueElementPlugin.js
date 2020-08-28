@@ -10,9 +10,10 @@ class CurdVueElementPlugin {
     }
     defaultOption() {
         return {
-            basePath: './src',
-            servicePath: '/service/test.ts',
-            componentPath: '/component',
+            name: 'test',
+            baseDir: './src',
+            serviceDir: '/service',
+            componentDir: '/component',
             service: {
                 add: {
                     url: '/add'
@@ -44,62 +45,54 @@ class CurdVueElementPlugin {
     }
     apply(compiler) {
         compiler.plugin('done', () => {
-            this.createFile(this.options.basePath + this.options.servicePath);
+            this.excute(this.options.baseDir + this.options.serviceDir, this.options.name + '.ts');
         });
     }
-    createFile(path) {
-        console.log(path);
+    excute(dir, file) {
+        const path = dir + '/' + file;
         let serviceTemplate = new ServiceTemplate_1.default(this.options.service);
-        console.log(serviceTemplate.getTemplate());
-        fs_1.default.writeFile(path, serviceTemplate.getTemplate(), 'utf8', function (error) {
-            if (error) {
-                console.log(error);
-                return false;
-            }
-        });
+        this.writeTemplate(dir, file, serviceTemplate.getTemplate());
     }
     writeTemplate(dir, name, content) {
-        let path = dir + '/' + name;
-        this.hasDir(dir).then(() => {
-            return this.hasNoFile(path);
-        }).catch((flag) => {
-            return flag && this.createDir(dir);
-        }).then(() => {
-            this.writeFile(path, content);
-        });
-    }
-    writeFile(path, content) {
-        return;
-    }
-    hasNoFile(path) {
         return new Promise((resolve, reject) => {
-            if (true)
-                resolve(true);
-            else
-                reject(false);
-        });
-    }
-    hasDir(dir) {
-        return new Promise((resolve, reject) => {
-            if (true)
-                resolve(true);
-            else
-                reject(false);
+            const path = dir + '/' + name;
+            this.hasNoFile(path)
+                .then(() => this.createDir(dir))
+                .then(() => this.writeFile(path, content))
+                .then(_ => resolve(`Info:${path}文件写入完成`))
+                .catch(err => reject(err));
         });
     }
     createDir(dir) {
         return new Promise((resolve, reject) => {
-            if (true)
-                resolve(true);
-            else
-                reject(false);
+            fs_1.default.mkdir(dir, { recursive: true }, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
         });
     }
-    getTemplate() {
+    writeFile(path, content) {
+        return new Promise((resolve, reject) => {
+            fs_1.default.writeFile(path, content, 'utf8', function (err) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
     }
-    getComponentTemplate() {
-    }
-    getServiceTemplate() {
+    hasNoFile(path) {
+        return new Promise((resolve, reject) => {
+            fs_1.default.access(path, fs_1.default.constants.F_OK, (err) => {
+                err ? resolve() : reject(`Warn: ${path} 已存在`);
+            });
+        });
     }
 }
 module.exports = CurdVueElementPlugin;
