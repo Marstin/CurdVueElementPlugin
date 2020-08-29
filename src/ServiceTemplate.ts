@@ -41,11 +41,12 @@ export default Services`
   }
   listServiceTemplate(url: string = '/list'): string {
     return `
-  list(){
+  list(data:any){
     return new Promise((resolve: Function, reject: Function) => {
       axios({
         url:'${url}',
-        method:'get'
+        method:'get',
+        data:qs.stringify(data)
       }).then((res: any) => {
         resolve(res.data.data.map((o: any ) =>  { return { value:o.id,text:o.projName} }))
       })
@@ -84,9 +85,9 @@ export default Services`
     })
   },`
   }
-  deleteServiceTemplate(url: string = '/delete'): string {
+  delServiceTemplate(url: string = '/delete'): string {
     return `
-  delete(ids: any) {
+  del(ids: any) {
     return new Promise((resolve: Function, reject: Function) => {
       axios({
         url:'${url}',

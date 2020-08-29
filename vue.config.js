@@ -19,7 +19,7 @@ module.exports = {
         name:'project',
         baseDir:'./example',
         serviceDir: '/service',
-        service:['add','update'],
+        service:['list','add','update','delete'],
       })
     ]
   },

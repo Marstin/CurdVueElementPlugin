@@ -2,6 +2,16 @@ import axios from "axios"
 import qs from "qs"
 
 const Services = {
+  list(){
+    return new Promise((resolve: Function, reject: Function) => {
+      axios({
+        url:'/list',
+        method:'get'
+      }).then((res: any) => {
+        resolve(res.data.data.map((o: any ) =>  { return { value:o.id,text:o.projName} }))
+      })
+    })
+  },
   add(data: any) {
     return new Promise((resolve: Function,reject: Function) => {
       axios({
@@ -26,6 +36,19 @@ const Services = {
       }).catch((err: any) => {
         reject(err)
       });
+    })
+  },
+  del(ids: any) {
+    return new Promise((resolve: Function, reject: Function) => {
+      axios({
+        url:'/delete',
+        method:'get',
+        params:{ids:ids}
+      }).then((res: any) => {
+        resolve(res.data)
+      }).catch ((err) => {
+        reject(err)
+      })
     })
   },
 }
