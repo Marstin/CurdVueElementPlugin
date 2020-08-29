@@ -4,7 +4,7 @@ export interface Options {
   baseDir?: string,
   serviceDir: string,
   componentDir?: string,
-  service: ServiceOptions,
+  service: Array<string|ServiceOptions>,
   model: {
     primarykey?: string,
     item: Array<any>
@@ -18,22 +18,12 @@ export interface Options {
 }
 
 export interface ServiceTemplateInterface {
-  templateFuncStack: Array<{func:Function,url:string}>
+  templateFuncStack: Array<{func:Function,url?:string}>
 }
 
 export interface ServiceOptions {
-  'add'?: {
-    url?: string
-  },
-  'list': {
-    url?: string
-  },
-  'delete'?: {
-    url?: string
-  },
-  'update'?: {
-    url?: string
-  }
+  func:string
+  url?:string
 }
 
 export interface CurdVueElementPluginInterface {

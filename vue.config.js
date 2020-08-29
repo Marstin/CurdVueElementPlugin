@@ -18,7 +18,8 @@ module.exports = {
       new CurdVueElementPlugin({
         name:'project',
         baseDir:'./example',
-        serviceDir: '/service/test/test'
+        serviceDir: '/service',
+        service:['add','update'],
       })
     ]
   },

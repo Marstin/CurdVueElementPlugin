@@ -3,33 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const ServiceTemplate_1 = tslib_1.__importDefault(require("./ServiceTemplate"));
 const util_1 = tslib_1.__importDefault(require("./util/util"));
+const DefaultOptions_1 = tslib_1.__importDefault(require("./DefaultOptions"));
 class CurdVueElementPlugin {
     constructor(options) {
+        this.defaultOption = () => ({ ...DefaultOptions_1.default });
         this.options = util_1.default.assign(this.defaultOption(), options);
-    }
-    defaultOption() {
-        return {
-            name: 'test',
-            baseDir: './src',
-            serviceDir: '/service',
-            componentDir: '/component',
-            service: {
-                list: {},
-            },
-            model: {
-                primarykey: 'id',
-                item: [{
-                        text: '名称',
-                        name: 'name'
-                    }]
-            },
-            searchModel: {},
-            tree: {
-                url: '',
-                isSearchCondition: true,
-                searchItem: 'id'
-            }
-        };
     }
     apply(compiler) {
         compiler.plugin('compilation', () => {

@@ -141,61 +141,16 @@
         <el-button type="primary" @click="onSave">保存</el-button>
       </span>
     </el-dialog>
-     <el-dialog
-      title="扫描二维码下载"
-      :visible.sync="qrcodeDialogVisible"
-      @opened="showQsCode"
-      width="296px">
-      <div class="qrcode" style="width:200px;height:250px;" ref="qrCodeUrl"></div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="onCopyLink">复制链接</el-button>
-        <el-button @click="qrcodeDialogVisible = false">关闭</el-button>
-      </span>
-    </el-dialog>
   </el-container>
 </template>
 
 <script lang="ts">
-import QRcode from "@/util/QRcode"
-import AppServices from "@/services/appmanage";
-import {showMessage,showConfirm,showError,deleteObjectEmpty,formatterTime} from "@/util/CommonUtil"
-const { getProjects,getTypes,getAppList,deleteApp,updateApp,addAppVersion,validateAppVersion,getAppDownUrl } = AppServices;
+import Services from "@/services/appmanage";
+import { showMessage,showConfirm,showError,deleteObjectEmpty,formatterTime } from "@/util/CommonUtil"
+const { getProjects,getTypes,getAppList,deleteApp,updateApp,addAppVersion } = AppServices;
 
 export default {
   data(){
-    const validateFile = (rule: any, value: any, callback: any) => {
-      if(!(this as any).filename){
-        callback("请选择文件")
-      } else {
-        callback()
-      }
-    };
-    const validateVersName = (rule: any, value: any, callback: any) => {
-      const form = (this as any).form;
-      if(value === ''){
-        callback("请输入版本名称")
-      }else if(!form.projId){
-        callback("请选择项目")
-      } else {
-        validateAppVersion({'projId':form.projId,'versName':form.versName,'id':form.id}).then((res: any) => {
-          if(res.result === '1'){
-            callback()
-          } else {
-            callback(res.info || '该版本名已存在')
-          }
-        })
-      }
-    };
-    const validateProjId = (rule: any, value: any, callback: any) => {
-      if(value === ''){
-        callback("请选择项目")
-      } else {
-        if ((this as any).form.versName) {
-          (this.$refs.appDataForm as any).validateField('versName');
-        }
-        callback();
-      }
-    };
     return {
       searchModel: {
         versName:'',
@@ -220,34 +175,12 @@ export default {
       delDisabled:true,
       dialogVisible:false,
       versAppType:'',
-      tableData: [],
+      tableData: [], 
       pageSize:10,
       pageNum:1,
       pageTotal:0,
       projects:[],
       types:[],
-      qrcode:null,
-      rules:{
-        projId:[
-          //{ required: true, message: '请选择项目', trigger: 'change' },
-          { required: true,validator: validateProjId,  trigger: 'change' }
-
-        ],
-        versAppType:[
-          { required: true, message: '请选择类型', trigger: 'change' }
-        ],
-        versName:[
-         // { required: true, message: '请输入版本名称',  trigger: 'blur' },
-          { required: true, validator: validateVersName,  trigger: 'blur' }
-        ],
-        versSequence:[
-          { required: true, message: '请输入顺序',  trigger: 'blur' },
-        ],
-        filename:[
-          { required: true, validator: validateFile, trigger: 'change' }
-        ]
-      },
-      appUrl:'',
       tableHeight:document.documentElement.clientHeight-350
     }
   },

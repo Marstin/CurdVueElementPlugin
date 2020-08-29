@@ -1,8 +1,8 @@
 import { ServiceOptions, ServiceTemplateInterface } from './Interface'
 
 class ServiceTemplate implements ServiceTemplateInterface {
-  templateFuncStack: Array<{func:Function,url:string}>
-  constructor(config: ServiceOptions){
+  templateFuncStack: Array<{func:Function,url?:string}>
+  constructor(config: Array<string|ServiceOptions>){
     this.templateFuncStack = this.getTemplateStack(config)
   }
   getTemplate(){
@@ -15,8 +15,16 @@ class ServiceTemplate implements ServiceTemplateInterface {
   getFuncName() {
     return this.templateFuncStack.map(f => f.func);
   }
-  getTemplateStack(config:ServiceOptions):Array<{func:Function,url:string}> {
-    const templateFuncStack:Array<{func:Function,url:string}> = []
+  getTemplateStack(config:Array<string|ServiceOptions>):Array<{func:Function,url?:string}> {
+    const templateFuncStack:Array<{func:Function,url?:string}> = []
+    config.forEach(c => {
+      if(c && typeof c === 'string') {
+        (this as any)[c + 'ServiceTemplate'] && templateFuncStack.push({func:(this as any)[c + 'ServiceTemplate']})
+      } else {
+        let obj:ServiceOptions = <ServiceOptions>c;
+        (this as any)[obj.func + 'ServiceTemplate'] && templateFuncStack.push({...obj,func:(this as any)[obj.func + 'ServiceTemplate']})
+      }
+    })
     for(let key in config){
       (this as any)[key + 'ServiceTemplate'] && templateFuncStack.push({func:(this as any)[key + 'ServiceTemplate'],url:(config as any)[key].url})
     }

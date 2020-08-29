@@ -16,6 +16,15 @@ class ServiceTemplate {
     }
     getTemplateStack(config) {
         const templateFuncStack = [];
+        config.forEach(c => {
+            if (c && typeof c === 'string') {
+                this[c + 'ServiceTemplate'] && templateFuncStack.push({ func: this[c + 'ServiceTemplate'] });
+            }
+            else {
+                let obj = c;
+                this[obj.func + 'ServiceTemplate'] && templateFuncStack.push({ ...obj, func: this[obj.func + 'ServiceTemplate'] });
+            }
+        });
         for (let key in config) {
             this[key + 'ServiceTemplate'] && templateFuncStack.push({ func: this[key + 'ServiceTemplate'], url: config[key].url });
         }

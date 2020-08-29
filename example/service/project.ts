@@ -1,0 +1,33 @@
+import axios from "axios"
+import qs from "qs"
+
+const Services = {
+  add(data: any) {
+    return new Promise((resolve: Function,reject: Function) => {
+      axios({
+        url:'/add',
+        method:'post',
+        data:qs.stringify(data)
+      }).then((res: any) => {
+        resolve(res.data)
+      }).catch((err: any) => {
+        reject(err)
+      });
+    })
+  },
+  update(data: any) {
+    return new Promise((resolve: Function,reject: Function) => {
+      axios({
+        url:'/update',
+        method:'post',
+        data:qs.stringify(data)
+      }).then((res: any) => {
+        resolve(res.data)
+      }).catch((err: any) => {
+        reject(err)
+      });
+    })
+  },
+}
+
+export default Services
