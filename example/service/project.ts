@@ -8,7 +8,9 @@ const Services = {
         url:'/list',
         method:'get'
       }).then((res: any) => {
-        resolve(res.data.data.map((o: any ) =>  { return { value:o.id,text:o.projName} }))
+        resolve(res.data)
+      }).catch((err: any) => {
+        reject(err)
       })
     })
   },

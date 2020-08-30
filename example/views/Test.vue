@@ -34,18 +34,18 @@
         <el-table-column prop="address" label="地址"> </el-table-column>
       </el-table>
       <el-pagination
-        :current-page="pageNo"
+        :current-page="pageModel.pageNo"
         :page-sizes="[10, 20, 50]"
-        :page-size="pageSize"
+        :page-size="pageModel.pageSize"
         @size-change="pageSizeChanged"
         @current-change="pageNumChanged"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="pageTotal">
+        :total="pageModel.pageTotal">
         </el-pagination>
     </el-main>
     <el-dialog
-      :title="dialogTitle"
-      :visible.sync="dialogVisible"
+      :title="dialogModel.dialogTitle"
+      :visible.sync="dialogModel.dialogVisible"
       width="30%">
       <el-form :model="form" ref="appDataForm" label-width="80px">
         <el-form-item label="姓名">
@@ -65,7 +65,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="_hideDialog()">关闭</el-button>
+        <el-button @click="dialogModel.dialogVisible=false">关闭</el-button>
         <el-button type="primary" @click="onSave">保存</el-button>
       </span>
     </el-dialog>
@@ -95,6 +95,15 @@ export default {
         age:"",
         address:"",
         telephone:""
+      },
+      pageModel:{
+        pageNo:1,
+        pageSize:10,
+        pageTotal:1
+      },
+      dialogModel:{
+        dialogTitle:'',
+        dialogVisible:false
       }
     }
   },
@@ -117,7 +126,7 @@ export default {
       .then(() => this.refreshTable())
     },
     onSave(){
-      let saveFunc = this.form.id ? update : add;
+      const saveFunc = this.form.id ? update : add;
       saveFunc(this.form)
       .then((mes) => this.showMessage(mes))
       .then(() => this.refreshTable())
@@ -129,24 +138,75 @@ export default {
     },
     _showDialog(title,data){
       this.form = Object.assign({},data);
-      this.dialogTitle = title;
-      this.dialogVisible = true;
+      this.dialogModel.dialogTitle = title;
+      this.dialogModel.dialogVisible = true;
+    },
+    handleSelectionChange(){
+      const selectedLength = this.$refs.mainTable.selection.length;
+      this.disabledModel.editDisabled = this.$refs.mainTable.selection.length !== 1;
+      this.disabledModel.delDisabled = this.$refs.mainTable.selection.length  === 0;
     },
     pageSizeChanged(size){
-      this.pageSize = size;
+      this.pageModel.pageSize = size;
       this.loadTableData()
     },
     pageNumChanged(num){
-      this.pageNo = num;
+      this.pageModel.pageNo = num;
       this.loadTableData()
     },
     refreshTable(params){
-      return list(params||this._getQueryParams()).then(data => this.tableData = this.convertDataToTableData(data));
+      return list(params||this._getQueryParams()).then(data => this.setTableDataAndTotalNum(data));
     },
-    convertDataToTableData = (data) => [...ret] = [...data],
+    setTableDataAndTotalNum(data){
+      this.pageModel.pageTotal = data.total;
+      this.tableData = this.convertDataToTableData(data.list)
+    },
+    convertDataToTableData (data) {
+      return [...data];
+    },
     _getQueryParams(){
-      return Object.assign({},{...{pageNo:this.pageNo,pageSize:this.pageSize},...this.searchModel})
+      return Object.assign({},{...{pageNo:this.pageModel.pageNo,pageSize:this.pageModel.pageSize},...this.searchModel})
     }
   }
 }
 </script>
+
+<style>
+  .total-container {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    padding: 10px;
+  }
+  .bottom-border {
+    border-bottom: 1px solid #dddee1;
+    border-bottom-color: #e9eaec;
+  }
+  .el-divider {
+    width: 98%;
+    margin: 0px auto 10px auto;
+  }
+  .el-header {
+    height: 100px;
+    align-items: center;
+    display: flex;
+  }
+  .search-form-inline {
+    padding: 20px 20px 0 20px;
+  }
+  .el-form--inline .el-form-item {
+    margin-right: 50px;
+  }
+  .el-form-search-button-item {
+    position: absolute;
+    right: 20px;
+  }
+  .el-pagination {
+    position: absolute;
+    bottom: -30px;
+    right: 70px;
+  }
+  .el-select {
+    width: 100%;
+  }
+</style>

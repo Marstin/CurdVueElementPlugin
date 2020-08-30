@@ -3,7 +3,7 @@ import test from "./test"
 
 Mock.Random.extend({
   telephone: function () {
-    var phonePrefixs = ['132', '135', '189','133','130','150'] // 自己写前缀哈
+    const phonePrefixs = ['132', '135', '189','133','130','150'] // 自己写前缀哈
     return this.pick(phonePrefixs) + Mock.mock(/\d{8}/) //Number()
   }
 })

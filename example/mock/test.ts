@@ -1,9 +1,9 @@
 export default [
   {
-    url:'/add',
-    type:'post',
+    url:'/list',
+    type:'get',
     data: {
-      "array|1-10":[
+      "list|10":[
         {
           "id":"@guid",
           "name":"@cname",
@@ -13,7 +13,8 @@ export default [
           "address":"@county(true)",
           "telephone":"@telephone"
         }
-      ]
+      ],
+      "total|10-100":20
     }
   }
 ]
