@@ -1,6 +1,7 @@
-import { OptionInterface } from './Interface'
+import { OptionInterface, TemplateInterface } from './Interface'
 import Util from './util'
 import ServiceTemplate from './ServiceTemplate'
+import ViewTemplate from './ViewTemplate'
 import { DefaultOption } from './DefaultOptions'
 
 class TemplateExecute {
@@ -15,15 +16,20 @@ class TemplateExecute {
   getOption(param: OptionInterface) {
     return Util.assign(DefaultOption, param)
   }
-  writeService() {
-    let serviceTemplate = new ServiceTemplate(this.option.service)
-    Util.writeTemplate(this.basedir + '/' + this.option.serviceDir, this.name + '.ts', serviceTemplate.getTemplate())
+  writeService(serviceTemplate: ServiceTemplate) {
+    return serviceTemplate.getTemplate().then((res: any) => {
+      return Util.writeTemplate(this.basedir + '/' + this.option.serviceDir, this.name + '.ts', res)
+    })
   }
-  writeView(dir: string) {
-
+  writeView(viewTemplate: ViewTemplate) {
+    Util.writeTemplate(this.basedir + '/' + this.option.componentDir, this.name + '.vue', viewTemplate.getTemplate())
   }
   execute() {
-    this.writeService();
+    let serviceTemplate = new ServiceTemplate(this.option.service)
+    this.writeService(serviceTemplate).then( _ => {
+      let viewTemplate = new ViewTemplate(serviceTemplate)
+      this.writeView(viewTemplate);
+    });
   }
 }
 

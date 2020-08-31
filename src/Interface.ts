@@ -23,10 +23,6 @@ export interface ItemInterface {
   isEdit: boolean
 }
 
-export interface ServiceTemplateInterface {
-  templateFuncStack: Array<{ func: Function, url?: string }>
-}
-
 export interface ServiceOptionsInterface {
   func: string
   url?: string
@@ -34,4 +30,8 @@ export interface ServiceOptionsInterface {
 
 export interface CurdVueElementPluginInterface {
   apply(compiler: any): any
+}
+
+export interface TemplateInterface {
+  getTemplate(): any
 }

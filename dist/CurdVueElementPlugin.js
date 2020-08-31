@@ -17,7 +17,6 @@ class CurdVueElementPlugin {
         return util_1.default.assign(DefaultOptions_1.DefaultPluginParam, param);
     }
     execute() {
-        console.log("=================================");
         for (let opt of this.PluginParam.options) {
             let curdObj = new TemplateExecute_1.default(opt, this.PluginParam.baseDir);
             curdObj.execute();

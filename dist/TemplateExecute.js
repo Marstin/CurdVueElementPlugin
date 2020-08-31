@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const util_1 = tslib_1.__importDefault(require("./util"));
 const ServiceTemplate_1 = tslib_1.__importDefault(require("./ServiceTemplate"));
+const ViewTemplate_1 = tslib_1.__importDefault(require("./ViewTemplate"));
 const DefaultOptions_1 = require("./DefaultOptions");
 class TemplateExecute {
     constructor(param, basedir) {
@@ -13,14 +14,20 @@ class TemplateExecute {
     getOption(param) {
         return util_1.default.assign(DefaultOptions_1.DefaultOption, param);
     }
-    writeService() {
-        let serviceTemplate = new ServiceTemplate_1.default(this.option.service);
-        util_1.default.writeTemplate(this.basedir + '/' + this.option.serviceDir, this.name + '.ts', serviceTemplate.getTemplate());
+    writeService(serviceTemplate) {
+        return serviceTemplate.getTemplate().then((res) => {
+            return util_1.default.writeTemplate(this.basedir + '/' + this.option.serviceDir, this.name + '.ts', res);
+        });
     }
-    writeView(dir) {
+    writeView(viewTemplate) {
+        util_1.default.writeTemplate(this.basedir + '/' + this.option.componentDir, this.name + '.vue', viewTemplate.getTemplate());
     }
     execute() {
-        this.writeService();
+        let serviceTemplate = new ServiceTemplate_1.default(this.option.service);
+        this.writeService(serviceTemplate).then(_ => {
+            let viewTemplate = new ViewTemplate_1.default(serviceTemplate);
+            this.writeView(viewTemplate);
+        });
     }
 }
 exports.default = TemplateExecute;
