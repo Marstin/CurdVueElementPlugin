@@ -41,13 +41,16 @@ export default Services`;
     }
     listServiceTemplate(url = '/list') {
         return `
-  list(){
+  list(data: any){
     return new Promise((resolve: Function, reject: Function) => {
       axios({
         url:'${url}',
-        method:'get'
+        method:'get',
+        params:data
       }).then((res: any) => {
-        resolve(res.data.data.map((o: any ) =>  { return { value:o.id,text:o.projName} }))
+        resolve(res.data)
+      }).catch((err: any) => {
+        reject(err)
       })
     })
   },`;
@@ -59,7 +62,7 @@ export default Services`;
       axios({
         url:'${url}',
         method:'post',
-        data:qs.stringify(data)
+        data:data
       }).then((res: any) => {
         resolve(res.data)
       }).catch((err: any) => {
@@ -75,7 +78,7 @@ export default Services`;
       axios({
         url:'${url}',
         method:'post',
-        data:qs.stringify(data)
+        data:data
       }).then((res: any) => {
         resolve(res.data)
       }).catch((err: any) => {
@@ -84,9 +87,9 @@ export default Services`;
     })
   },`;
     }
-    deleteServiceTemplate(url = '/delete') {
+    delServiceTemplate(url = '/delete') {
         return `
-  delete(ids: any) {
+  del(ids: any) {
     return new Promise((resolve: Function, reject: Function) => {
       axios({
         url:'${url}',

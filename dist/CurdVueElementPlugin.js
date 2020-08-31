@@ -1,23 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const ServiceTemplate_1 = tslib_1.__importDefault(require("./ServiceTemplate"));
-const util_1 = tslib_1.__importDefault(require("./util/util"));
-const DefaultOptions_1 = tslib_1.__importDefault(require("./DefaultOptions"));
+const TemplateExecute_1 = tslib_1.__importDefault(require("./TemplateExecute"));
+const util_1 = tslib_1.__importDefault(require("./util"));
+const DefaultOptions_1 = require("./DefaultOptions");
 class CurdVueElementPlugin {
-    constructor(options) {
-        this.defaultOption = () => ({ ...DefaultOptions_1.default });
-        this.options = util_1.default.assign(this.defaultOption(), options);
+    constructor(PluginParam) {
+        this.PluginParam = this.getOption(PluginParam);
     }
     apply(compiler) {
-        compiler.plugin('compilation', () => {
-            this.excute(this.options.baseDir + this.options.serviceDir, this.options.name + '.ts');
+        compiler.plugin('environment', () => {
+            this.execute();
         });
     }
-    excute(dir, file) {
-        const path = dir + '/' + file;
-        let serviceTemplate = new ServiceTemplate_1.default(this.options.service);
-        util_1.default.writeTemplate(dir, file, serviceTemplate.getTemplate());
+    getOption(param) {
+        return util_1.default.assign(DefaultOptions_1.DefaultPluginParam, param);
+    }
+    execute() {
+        console.log("=================================");
+        for (let opt of this.PluginParam.options) {
+            let curdObj = new TemplateExecute_1.default(opt, this.PluginParam.baseDir);
+            curdObj.execute();
+        }
     }
 }
 module.exports = CurdVueElementPlugin;

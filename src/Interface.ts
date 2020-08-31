@@ -1,33 +1,37 @@
+export interface PluginParamInterface {
+  baseDir: string,
+  options: Array<OptionInterface>
+}
 
-export interface Options {
+export interface OptionInterface {
   name: string,
-  baseDir?: string,
-  serviceDir: string,
+  serviceDir?: string,
   componentDir?: string,
-  service: Array<string|ServiceOptions>,
-  model: {
-    primarykey?: string,
-    item: Array<any>
-  },
-  searchModel?: Object,
-  tree?:{
-    url: string
-    isSearchCondition: boolean,
-    searchItem: string
-  }
+  service: Array<string | ServiceOptionsInterface>,
+  component?: ComponentTemplateInterface,
+}
+
+export interface ComponentTemplateInterface {
+  primaryKey?: string,
+  model: Array<ItemInterface>
+}
+
+export interface ItemInterface {
+  name: string,
+  text: string,
+  isSearch: boolean,
+  isEdit: boolean
 }
 
 export interface ServiceTemplateInterface {
-  templateFuncStack: Array<{func:Function,url?:string}>
+  templateFuncStack: Array<{ func: Function, url?: string }>
 }
 
-export interface ServiceOptions {
-  func:string
-  url?:string
+export interface ServiceOptionsInterface {
+  func: string
+  url?: string
 }
 
 export interface CurdVueElementPluginInterface {
-  config?: any
   apply(compiler: any): any
-  excute(path: string,file: string): any
 }

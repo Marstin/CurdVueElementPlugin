@@ -178,10 +178,6 @@ export default {
     right: 10px;
     padding: 10px;
   }
-  .bottom-border {
-    border-bottom: 1px solid #dddee1;
-    border-bottom-color: #e9eaec;
-  }
   .el-divider {
     width: 98%;
     margin: 0px auto 10px auto;
@@ -205,8 +201,5 @@ export default {
     position: absolute;
     bottom: -30px;
     right: 70px;
-  }
-  .el-select {
-    width: 100%;
   }
 </style>

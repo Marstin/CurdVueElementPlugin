@@ -2,11 +2,12 @@ import axios from "axios"
 import qs from "qs"
 
 const Services = {
-  list(){
+  list(data: any){
     return new Promise((resolve: Function, reject: Function) => {
       axios({
         url:'/list',
-        method:'get'
+        method:'get',
+        params:data
       }).then((res: any) => {
         resolve(res.data)
       }).catch((err: any) => {
@@ -19,7 +20,7 @@ const Services = {
       axios({
         url:'/add',
         method:'post',
-        data:qs.stringify(data)
+        data:data
       }).then((res: any) => {
         resolve(res.data)
       }).catch((err: any) => {
@@ -32,7 +33,7 @@ const Services = {
       axios({
         url:'/update',
         method:'post',
-        data:qs.stringify(data)
+        data:data
       }).then((res: any) => {
         resolve(res.data)
       }).catch((err: any) => {

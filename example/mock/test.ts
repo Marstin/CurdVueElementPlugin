@@ -1,6 +1,6 @@
 export default [
   {
-    url:'/list',
+    url:RegExp('/list.*'),
     type:'get',
     data: {
       "list|10":[

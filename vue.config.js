@@ -1,29 +1,34 @@
-const CurdVueElementPlugin = require ('./dist/CurdVueElementPlugin.js')
+const CurdVueElementPlugin = require('./dist/CurdVueElementPlugin.js')
 const path = require('path')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, dir)
 }
 module.exports = {
   // 选项...
-  outputDir:'example/dist',
+  outputDir: 'example/dist',
   pages: {
     index: {
-      entry : 'example/main.ts',
-      template : 'example/public/index.html'
+      entry: 'example/main.ts',
+      template: 'example/public/index.html'
     }
   },
   configureWebpack: {
     plugins: [
       new CurdVueElementPlugin({
-        name:'project',
-        baseDir:'./example',
-        serviceDir: '/service',
-        service:['list','add','update','delete'],
+        baseDir: './example',
+        options: [{
+          serviceDir: '/services',
+          service: ['list', 'add', 'update', 'del'],
+        },{
+          serviceDir: '/services',
+          service: ['list', 'add', 'update', 'del'],
+        }
+      ],
       })
     ]
   },
-  chainWebpack:config => {
+  chainWebpack: config => {
     config.resolve.alias
       .set('@', resolve('example'))
   }

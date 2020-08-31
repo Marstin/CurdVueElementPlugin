@@ -1,25 +1,28 @@
-import { Options } from './Interface'
+import { PluginParamInterface,ComponentTemplateInterface,OptionInterface,ItemInterface } from './Interface'
 
-const DefaultOptions: Options = {
-  name:'test',
+const DefaultPluginParam: PluginParamInterface = {
   baseDir: './src',
-  serviceDir: '/service',
-  componentDir: '/component',
-  service:['list'],
-  model: {
-    primarykey:'id',
-    item:[{
-      text:'名称',
-      name:'name'
-    }]
-  },
-  searchModel: {
-
-  },
-  tree: {
-    url: '',
-    isSearchCondition: true,
-    searchItem: 'id'
-  }
+  options: []
 }
-export default DefaultOptions;
+
+const DefaultComponentTemplate: ComponentTemplateInterface = {
+  primaryKey:'id',
+  model:[]
+}
+
+const DefaultOption: OptionInterface = {
+  name: "default",
+  serviceDir: "/services",
+  componentDir: "/views",
+  service: ['list'],
+  component: DefaultComponentTemplate,
+}
+
+const DefaultItem: ItemInterface = {
+  name: '',
+  text: '',
+  isSearch: false,
+  isEdit: true
+}
+
+export { DefaultPluginParam,DefaultComponentTemplate,DefaultItem,DefaultOption };

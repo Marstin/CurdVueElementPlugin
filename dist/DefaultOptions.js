@@ -1,23 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const DefaultOptions = {
-    name: 'test',
+exports.DefaultOption = exports.DefaultItem = exports.DefaultComponentTemplate = exports.DefaultPluginParam = void 0;
+const DefaultPluginParam = {
     baseDir: './src',
-    serviceDir: '/service',
-    componentDir: '/component',
-    service: ['list'],
-    model: {
-        primarykey: 'id',
-        item: [{
-                text: '名称',
-                name: 'name'
-            }]
-    },
-    searchModel: {},
-    tree: {
-        url: '',
-        isSearchCondition: true,
-        searchItem: 'id'
-    }
+    options: []
 };
-exports.default = DefaultOptions;
+exports.DefaultPluginParam = DefaultPluginParam;
+const DefaultComponentTemplate = {
+    primaryKey: 'id',
+    model: []
+};
+exports.DefaultComponentTemplate = DefaultComponentTemplate;
+const DefaultOption = {
+    name: "default",
+    serviceDir: "/services",
+    componentDir: "/views",
+    service: ['list'],
+    component: DefaultComponentTemplate,
+};
+exports.DefaultOption = DefaultOption;
+const DefaultItem = {
+    name: '',
+    text: '',
+    isSearch: false,
+    isEdit: true
+};
+exports.DefaultItem = DefaultItem;
