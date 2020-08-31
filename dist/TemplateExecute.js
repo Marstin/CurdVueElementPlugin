@@ -16,16 +16,16 @@ class TemplateExecute {
     }
     writeService(serviceTemplate) {
         return serviceTemplate.getTemplate().then((res) => {
-            return util_1.default.writeTemplate(this.basedir + '/' + this.option.serviceDir, this.name + '.ts', res);
+            return util_1.default.writeTemplate(this.basedir + this.option.serviceDir, this.name + '.ts', res);
         });
     }
     writeView(viewTemplate) {
-        util_1.default.writeTemplate(this.basedir + '/' + this.option.componentDir, this.name + '.vue', viewTemplate.getTemplate());
+        util_1.default.writeTemplate(this.basedir + this.option.componentDir, this.name + '.vue', viewTemplate.getTemplate());
     }
     execute() {
-        let serviceTemplate = new ServiceTemplate_1.default(this.option.service);
-        this.writeService(serviceTemplate).then(_ => {
-            let viewTemplate = new ViewTemplate_1.default(serviceTemplate);
+        let serviceTemplate = new ServiceTemplate_1.default(this.option.service, this.option.serviceDir + '/' + this.name);
+        this.writeService(serviceTemplate).finally(() => {
+            let viewTemplate = new ViewTemplate_1.default(this.option.component, serviceTemplate);
             this.writeView(viewTemplate);
         });
     }

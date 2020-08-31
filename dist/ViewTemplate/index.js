@@ -1,8 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const util_1 = tslib_1.__importDefault(require("../util"));
+const DefaultOptions_1 = require("../DefaultOptions");
 class ViewTemplate {
-    constructor(serviceTemplate) {
+    constructor(config, serviceTemplate) {
+        this.component = util_1.default.assign(DefaultOptions_1.DefaultComponentTemplate, config);
+        this._assign();
         this.serviceTemplate = serviceTemplate;
+    }
+    _assign() {
+        for (let key in this.component.model) {
+            let obj = Object.assign({}, this.component.model[key]);
+            this.component.model[key] = util_1.default.assign(DefaultOptions_1.DefaultItem, obj);
+        }
+        console.log(this.component);
     }
     hasAdd() {
         return this.serviceTemplate.hasOpt('add');
@@ -16,12 +28,7 @@ class ViewTemplate {
     getSearchContext() {
         return `<el-header style="height:100px">
     <el-form :inline="true" :model="searchModel" class="search-form-inline" size="big">
-      <el-form-item label="名称">
-        <el-input v-model="searchModel.name"></el-input>
-      </el-form-item>
-      <el-form-item label="电话">
-        <el-input v-model="searchModel.telePhone"></el-input>
-      </el-form-item>
+      ${this._getSearchContext()}
       <el-form-item class="el-form-search-button-item">
         <el-button type="primary" @click="onSearch">查询</el-button>
       </el-form-item>
@@ -29,20 +36,32 @@ class ViewTemplate {
   </el-header>
   <el-divider></el-divider>`;
     }
+    _getSearchContext() {
+        return this.component.model.filter(item => item.isSearch === true).map(item => `<el-form-item label="${item.text}">
+        <el-input v-model="searchModel.${item.name}"></el-input>
+      </el-form-item>`).join("\n      ");
+    }
     getButtonContext() {
         return `<div style="text-align: left;margin-bottom:20px;">
-    ${this.hasAdd() ? `<el-button @click="onAdd">新增</el-button>` : ''}
-    ${this.hasUpdate() ? `<el-button :disabled="disabledModel.editDisabled" @click="onEdit">修改</el-button>` : ''}
-    ${this.hasDel() ? `<el-button :disabled="disabledModel.delDisabled" @click="onDelete">删除</el-button>` : ''}
-  </div>`;
+      ${this.hasAdd() ? `<el-button @click="onAdd">新增</el-button>` : ''}
+      ${this.hasUpdate() ? `<el-button :disabled="disabledModel.editDisabled" @click="onEdit">修改</el-button>` : ''}
+      ${this.hasDel() ? `<el-button :disabled="disabledModel.delDisabled" @click="onDelete">删除</el-button>` : ''}
+    </div>`;
     }
     getColumnsContext() {
         return `<el-table-column type="selection"> </el-table-column>
-    <el-table-column prop="name" label="姓名"></el-table-column>
-    <el-table-column prop="sex" label="性别"></el-table-column>
-    <el-table-column prop="telephone" label="手机号码"></el-table-column>
-    <el-table-column prop="email" label="邮箱"> </el-table-column>
-    <el-table-column prop="address" label="地址"> </el-table-column>`;
+        ${this._getColumnsContext()}`;
+    }
+    _getColumnsContext() {
+        return this.component.model.map(item => `<el-table-column prop="${item.name}" label="${item.text}"></el-table-column>`).join('\n        ');
+    }
+    getFormItemModel() {
+        let columns = this.component.model.filter(item => item.isEdit === true).map(item => `${item.name}:""`);
+        columns.unshift(`${this.component.primaryKey}:""`);
+        return columns.join(",\n          ");
+    }
+    getSearchItemModel() {
+        return this.component.model.filter(item => item.isSearch === true).map(item => `${item.name}:""`).join(",\n          ");
     }
     getFormDialogContext() {
         return `<el-dialog
@@ -50,21 +69,7 @@ class ViewTemplate {
     :visible.sync="dialogModel.dialogVisible"
     width="30%">
     <el-form :model="form" ref="appDataForm" label-width="80px">
-      <el-form-item label="姓名">
-        <el-input v-model="form.name" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="性别" >
-        <el-input v-model="form.sex" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="手机号码">
-        <el-input v-model="form.telephone" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱">
-        <el-input v-model="form.email" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="地址">
-        <el-input v-model="form.address" autocomplete="off"></el-input>
-      </el-form-item>
+      ${this._getFormDialogContext()}
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogModel.dialogVisible=false">关闭</el-button>
@@ -72,11 +77,15 @@ class ViewTemplate {
     </span>
   </el-dialog>`;
     }
+    _getFormDialogContext() {
+        return this.component.model.filter(item => item.isEdit === true).map(item => `<el-form-item label="${item.text}">
+        <el-input v-model="form.${item.name}" autocomplete="off"></el-input>
+      </el-form-item>`).join("\n    ");
+    }
     getServicePath() {
-        return `@/services/project`;
+        return "@" + this.serviceTemplate.getFilePath();
     }
     getServiceOptToStr() {
-        console.log(this.serviceTemplate.getAllFunc());
         return this.serviceTemplate.getAllFunc().join(', ');
     }
     getTemplate() {
@@ -115,21 +124,14 @@ class ViewTemplate {
       return {
         tableData:[],
         searchModel:{
-          name:'',
-          telephone:''
+          ${this.getSearchItemModel()}
         },
         disabledModel:{
           editDisabled: true,
           delDisabled: true
         },
         ${this.hasAdd() || this.hasUpdate() ? `form:{
-          id:"",
-          name:"",
-          sex:"",
-          email:"",
-          age:"",
-          address:"",
-          telephone:""
+          ${this.getFormItemModel()}
         },` : ''}
         pageModel:{
           pageNo:1,

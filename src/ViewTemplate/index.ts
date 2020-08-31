@@ -1,28 +1,36 @@
-import { TemplateInterface } from '../Interface'
+import { TemplateInterface,ComponentTemplateInterface } from '../Interface'
+import Util from '../util'
+import { DefaultComponentTemplate,DefaultItem } from '../DefaultOptions'
 import ServiceTemplate from '../ServiceTemplate'
+
 class ViewTemplate implements TemplateInterface {
-  serviceTemplate:ServiceTemplate
-  constructor(serviceTemplate: ServiceTemplate){
+  serviceTemplate: ServiceTemplate
+  component:ComponentTemplateInterface
+  constructor(config:ComponentTemplateInterface,serviceTemplate: ServiceTemplate) {
+    this.component = Util.assign(DefaultComponentTemplate,config)
+    this._assign()
     this.serviceTemplate = serviceTemplate
   }
-  hasAdd(){
+  _assign(){
+    for(let key in this.component.model){
+      let obj = Object.assign({},this.component.model[key])
+      this.component.model[key] = Util.assign(DefaultItem,obj)
+    }
+    console.log(this.component)
+  }
+  hasAdd() {
     return this.serviceTemplate.hasOpt('add');
   }
-  hasDel(){
+  hasDel() {
     return this.serviceTemplate.hasOpt('del');
   }
-  hasUpdate(){
+  hasUpdate() {
     return this.serviceTemplate.hasOpt('update');
   }
-  getSearchContext(){
+  getSearchContext() {
     return `<el-header style="height:100px">
     <el-form :inline="true" :model="searchModel" class="search-form-inline" size="big">
-      <el-form-item label="名称">
-        <el-input v-model="searchModel.name"></el-input>
-      </el-form-item>
-      <el-form-item label="电话">
-        <el-input v-model="searchModel.telePhone"></el-input>
-      </el-form-item>
+      ${this._getSearchContext()}
       <el-form-item class="el-form-search-button-item">
         <el-button type="primary" @click="onSearch">查询</el-button>
       </el-form-item>
@@ -30,42 +38,40 @@ class ViewTemplate implements TemplateInterface {
   </el-header>
   <el-divider></el-divider>`
   }
-  getButtonContext(){
+  _getSearchContext(){
+    return this.component.model.filter(item => item.isSearch === true).map(item => `<el-form-item label="${item.text}">
+        <el-input v-model="searchModel.${item.name}"></el-input>
+      </el-form-item>`).join("\n      ")
+  }
+  getButtonContext() {
     return `<div style="text-align: left;margin-bottom:20px;">
-    ${this.hasAdd() ?`<el-button @click="onAdd">新增</el-button>`:''}
-    ${this.hasUpdate() ?`<el-button :disabled="disabledModel.editDisabled" @click="onEdit">修改</el-button>`:''}
-    ${this.hasDel() ?`<el-button :disabled="disabledModel.delDisabled" @click="onDelete">删除</el-button>`:''}
-  </div>`
+      ${this.hasAdd() ? `<el-button @click="onAdd">新增</el-button>` : ''}
+      ${this.hasUpdate() ? `<el-button :disabled="disabledModel.editDisabled" @click="onEdit">修改</el-button>` : ''}
+      ${this.hasDel() ? `<el-button :disabled="disabledModel.delDisabled" @click="onDelete">删除</el-button>` : ''}
+    </div>`
   }
-  getColumnsContext(){
+  getColumnsContext() {
     return `<el-table-column type="selection"> </el-table-column>
-    <el-table-column prop="name" label="姓名"></el-table-column>
-    <el-table-column prop="sex" label="性别"></el-table-column>
-    <el-table-column prop="telephone" label="手机号码"></el-table-column>
-    <el-table-column prop="email" label="邮箱"> </el-table-column>
-    <el-table-column prop="address" label="地址"> </el-table-column>`
+        ${this._getColumnsContext()}`
   }
-  getFormDialogContext(){
+  _getColumnsContext(){
+    return this.component.model.map(item => `<el-table-column prop="${item.name}" label="${item.text}"></el-table-column>`).join('\n        ')
+  }
+  getFormItemModel() {
+    let columns = this.component.model.filter(item => item.isEdit === true).map(item => `${item.name}:""`) 
+    columns.unshift(`${this.component.primaryKey}:""`)
+    return columns.join(",\n          ");
+  }
+  getSearchItemModel() {
+    return this.component.model.filter(item => item.isSearch === true).map(item => `${item.name}:""`).join(",\n          ")
+  }
+  getFormDialogContext() {
     return `<el-dialog
     :title="dialogModel.dialogTitle"
     :visible.sync="dialogModel.dialogVisible"
     width="30%">
     <el-form :model="form" ref="appDataForm" label-width="80px">
-      <el-form-item label="姓名">
-        <el-input v-model="form.name" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="性别" >
-        <el-input v-model="form.sex" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="手机号码">
-        <el-input v-model="form.telephone" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱">
-        <el-input v-model="form.email" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="地址">
-        <el-input v-model="form.address" autocomplete="off"></el-input>
-      </el-form-item>
+      ${this._getFormDialogContext()}
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogModel.dialogVisible=false">关闭</el-button>
@@ -73,14 +79,18 @@ class ViewTemplate implements TemplateInterface {
     </span>
   </el-dialog>`
   }
-  getServicePath(){
-    return `@/services/project`
+  _getFormDialogContext(){
+    return this.component.model.filter(item => item.isEdit === true).map(item => `<el-form-item label="${item.text}">
+        <el-input v-model="form.${item.name}" autocomplete="off"></el-input>
+      </el-form-item>`).join("\n    ")
   }
-  getServiceOptToStr(){
-    console.log(this.serviceTemplate.getAllFunc())
+  getServicePath() {
+    return "@" + this.serviceTemplate.getFilePath()
+  }
+  getServiceOptToStr() {
     return this.serviceTemplate.getAllFunc().join(', ')
   }
-  getTemplate(){
+  getTemplate() {
     return `<template>
   <el-container class="total-container">
     ${this.getSearchContext()}
@@ -116,21 +126,14 @@ class ViewTemplate implements TemplateInterface {
       return {
         tableData:[],
         searchModel:{
-          name:'',
-          telephone:''
+          ${this.getSearchItemModel()}
         },
         disabledModel:{
           editDisabled: true,
           delDisabled: true
         },
-        ${this.hasAdd()||this.hasUpdate() ? `form:{
-          id:"",
-          name:"",
-          sex:"",
-          email:"",
-          age:"",
-          address:"",
-          telephone:""
+        ${this.hasAdd() || this.hasUpdate() ? `form:{
+          ${this.getFormItemModel()}
         },` : ''}
         pageModel:{
           pageNo:1,
@@ -150,7 +153,7 @@ class ViewTemplate implements TemplateInterface {
       onSearch(){
         this.refreshTable();
       },
-      ${this.hasUpdate()?`onEdit(){
+      ${this.hasUpdate() ? `onEdit(){
         this._showDialog("编辑",this.$refs.mainTable.selection[0])
       },`: ''}
       ${this.hasAdd() ? `onAdd(){
@@ -161,7 +164,7 @@ class ViewTemplate implements TemplateInterface {
         .then((mes) => this.showMessage(mes))
         .then(() => this.refreshTable())
       },`: ''}
-      ${this.hasAdd()||this.hasUpdate() ? `onSave(){
+      ${this.hasAdd() || this.hasUpdate() ? `onSave(){
         const saveFunc = this.form.id ? update : add;
         saveFunc(this.form)
         .then((mes) => this.showMessage(mes))

@@ -3,6 +3,7 @@ import Util from './util'
 import ServiceTemplate from './ServiceTemplate'
 import ViewTemplate from './ViewTemplate'
 import { DefaultOption } from './DefaultOptions'
+import { reject } from 'any-promise'
 
 class TemplateExecute {
   option: OptionInterface
@@ -18,16 +19,16 @@ class TemplateExecute {
   }
   writeService(serviceTemplate: ServiceTemplate) {
     return serviceTemplate.getTemplate().then((res: any) => {
-      return Util.writeTemplate(this.basedir + '/' + this.option.serviceDir, this.name + '.ts', res)
+      return Util.writeTemplate(this.basedir + this.option.serviceDir, this.name + '.ts', res)
     })
   }
   writeView(viewTemplate: ViewTemplate) {
-    Util.writeTemplate(this.basedir + '/' + this.option.componentDir, this.name + '.vue', viewTemplate.getTemplate())
+    Util.writeTemplate(this.basedir  + this.option.componentDir, this.name + '.vue', viewTemplate.getTemplate())
   }
   execute() {
-    let serviceTemplate = new ServiceTemplate(this.option.service)
-    this.writeService(serviceTemplate).then( _ => {
-      let viewTemplate = new ViewTemplate(serviceTemplate)
+    let serviceTemplate = new ServiceTemplate(this.option.service,this.option.serviceDir + '/'+ this.name)
+    this.writeService(serviceTemplate).finally( () => {
+      let viewTemplate = new ViewTemplate(this.option.component,serviceTemplate)
       this.writeView(viewTemplate);
     });
   }

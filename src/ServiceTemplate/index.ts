@@ -1,12 +1,16 @@
 import { ServiceOptionsInterface, TemplateInterface } from '../Interface'
 
 class ServiceTemplate implements TemplateInterface {
+  private filePath:string
   templateFuncStack: Array<{ opt: string, url?: string, funcName?: string }>
-  constructor(config: Array<string | ServiceOptionsInterface>) {
+  constructor(config: Array<string | ServiceOptionsInterface>,filePath:string) {
     this.templateFuncStack = this.getTemplateStack(config)
+    this.filePath = filePath;
     this.hasOpt('list')||this.templateFuncStack.push({opt:'list'})
   }
-
+  getFilePath(): string{
+    return this.filePath;
+  }
   async getTemplate() {
     let codeStr: string = "";
     for (let f of this.templateFuncStack) {

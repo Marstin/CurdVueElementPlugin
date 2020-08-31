@@ -20,9 +20,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class ServiceTemplate {
-    constructor(config) {
+    constructor(config, filePath) {
         this.templateFuncStack = this.getTemplateStack(config);
+        this.filePath = filePath;
         this.hasOpt('list') || this.templateFuncStack.push({ opt: 'list' });
+    }
+    getFilePath() {
+        return this.filePath;
     }
     async getTemplate() {
         let codeStr = "";

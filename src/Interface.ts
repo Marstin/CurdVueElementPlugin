@@ -8,7 +8,7 @@ export interface OptionInterface {
   serviceDir?: string,
   componentDir?: string,
   service: Array<string | ServiceOptionsInterface>,
-  component?: ComponentTemplateInterface,
+  component: ComponentTemplateInterface,
 }
 
 export interface ComponentTemplateInterface {
