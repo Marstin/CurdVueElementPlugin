@@ -1,4 +1,4 @@
-const CurdVueElementPlugin = require('./dist/CurdVueElementPlugin.js')
+const CurdVueElementPlugin = require('curd-vue-element-plugin')
 const path = require('path')
 
 function resolve(dir) {
@@ -6,17 +6,17 @@ function resolve(dir) {
 }
 module.exports = {
   // 选项...
-  outputDir: 'example/dist',
+  outputDir: 'src/dist',
   pages: {
     index: {
-      entry: 'example/main.ts',
-      template: 'example/public/index.html'
+      entry: 'src/main.ts',
+      template: 'src/public/index.html'
     }
   },
   configureWebpack: {
     plugins: [
       new CurdVueElementPlugin({
-        baseDir: './example',
+        baseDir: './src',
         options: [{
           name: 'project',
           service: ['list', 'add', 'update', 'del'],
@@ -48,6 +48,6 @@ module.exports = {
   },
   chainWebpack: config => {
     config.resolve.alias
-      .set('@', resolve('example'))
+      .set('@', resolve('src'))
   }
 }
