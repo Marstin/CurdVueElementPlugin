@@ -57,4 +57,6 @@ npm run test
 访问 http://localhost:8080/test 可看到自动生成的页面
 
 ### 相关文档
-[Webpack Plugin API](https://www.webpackjs.com/api/plugins/).
+[Webpack Plugin API](https://www.webpackjs.com/api/plugins/)
+
+[curd-vue-element-plugin 源码](https://github.com/Marstin/curd-vue-element-plugin)
