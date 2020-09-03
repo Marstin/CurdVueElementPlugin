@@ -54,7 +54,7 @@ npm run test
 ```
 `./src/services/project.ts`和`./src/views/project.vue`均已生成
 
-访问 (http://localhost:8080/test)[http://localhost:8080/test] 可看到自动生成的页面
+访问 http://localhost:8080/test 可看到自动生成的页面
 
 ### 相关文档
 [Webpack Plugin API](https://www.webpackjs.com/api/plugins/).
